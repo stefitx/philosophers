@@ -32,6 +32,8 @@ typedef struct s_global
 	int				someone_died;
 	pthread_mutex_t	mtx_print;
 	pthread_mutex_t mtx_global;
+	pthread_mutex_t	mtx_for_death;
+	pthread_mutex_t mtx_for_fullness;
 } t_global;
 
 typedef struct s_philo
@@ -41,17 +43,17 @@ typedef struct s_philo
 	int				times_eaten;
 	int				i_am_full;
 	long			last_time_eaten;
-	t_global			*global;
+	pthread_mutex_t mtx_last_tm_eat;
 	pthread_mutex_t	right_fork;
 	pthread_mutex_t	*left_fork;
-	pthread_mutex_t	mtx_for_god;
+	t_global		*global;
 } t_philo;
 
 int		wrong_args(int argc, char **argv, t_global *global);
 void	init_philo(t_global *global, t_philo *philo);
 void	print_str(t_philo philo, char *str);
 void	*philo_routine(void *arg);
-void	god(t_philo *philo, t_global *global);
+int	god(t_philo *philo, t_global *global);
 void	init_thread(t_global *global, t_philo *philo);
 long	ft_get_time(long time_start);
 void	ft_usleep(long long time);

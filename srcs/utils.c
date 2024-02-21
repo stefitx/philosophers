@@ -23,9 +23,9 @@ long	ft_get_time(long time_start)
 
 void	print_str(t_philo philo, char *str)
 {
-	pthread_mutex_lock(&philo.global->mtx_print);
-	printf("%d %s\n",philo.id, str);
-	pthread_mutex_unlock(&philo.global->mtx_print);
+		pthread_mutex_lock(&philo.global->mtx_print);
+		printf("%d %s\n",philo.id, str);
+		pthread_mutex_unlock(&philo.global->mtx_print);
 }
 
 void	ft_usleep(long long time)

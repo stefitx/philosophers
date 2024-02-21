@@ -28,9 +28,14 @@ int	main(int argc, char **argv)
 		global.tm_begin = ft_get_time(0);
 		pthread_mutex_unlock(&global.mtx_global);
 		god(philo, &global);
+		// if(god(philo, &global) == 1)
+		// {
+		// 	pthread_mutex_unlock(&global.mtx_print);
+		// 	return 1;
+		// }
 	}
-	 // for (int i = 0; i < global.nr_ph; i++) {
-     //     pthread_join(philo[i].thread, NULL);
-     // }
+	 for (int i = 0; i < global.nr_ph; i++) {
+         pthread_join(philo[i].thread, NULL);
+     }
 		return 0;
 }

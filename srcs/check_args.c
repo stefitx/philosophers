@@ -41,6 +41,7 @@ int	wrong_args(int argc, char **argv, t_global *global)
 		{
 			pthread_mutex_init(&global->mtx_print, NULL);
 			pthread_mutex_init(&global->mtx_global, NULL);
+			pthread_mutex_init(&global->mtx_for_god, NULL);
 			pthread_mutex_lock(&global->mtx_global);
 			global->nr_ph = ft_atoi(argv[1]);
 			global->die_time = ft_atoi(argv[2]);
