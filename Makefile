@@ -11,7 +11,7 @@
 # **************************************************************************** #
 
 NAME	= philos
-FLAGS	= -Wall -Wextra -Werror -g -fsanitize=thread
+FLAGS	= -Wall -Wextra -Werror -g #-fsanitize=thread
 RM		= rm -rf
 
 SRCS_DIR = ./srcs

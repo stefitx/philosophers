@@ -19,29 +19,63 @@ void	init_philo(t_global *global, t_philo *philo)
 	i = 0;
 	while (i < global->nr_ph)
 	{
+		pthread_mutex_init(&philo[i].mtx_last_tm_eat, NULL);
+		pthread_mutex_init(&philo[i].mtx_for_fullness, NULL);
 		philo[i].id = i + 1;
 		philo[i].times_eaten = 0;
 		philo[i].i_am_full = 0;
 		philo[i].last_time_eaten = ft_get_time(0);
 		philo[i].global = global;
-		philo[i].global->someone_died = 0;
 		pthread_mutex_init(&philo[i].right_fork, NULL);
 		if (i > 0)
 			philo[i].left_fork = &philo[i - 1].right_fork;
 		i++;
 	}
 	philo[0].left_fork = &philo[global->nr_ph - 1].right_fork;
+	global->philosophers = philo;
 }
 
 void	init_thread(t_global *global, t_philo *philo)
 {
 	int i;
 	i = 0;
+	
+	pthread_create(&global->god_t, NULL, &god, global);
 	while (i < global->nr_ph)
 	{
 		pthread_create(&philo[i].thread, NULL, &philo_routine, &philo[i]);
 		i++;
 	}
+}
+
+void	check_death(t_philo	*philo)
+{
+	pthread_mutex_lock(&philo->global->mtx_global);
+	pthread_mutex_unlock(&philo->global->mtx_global);
+	pthread_mutex_lock(&philo->global->mtx_for_death);
+	pthread_mutex_unlock(&philo->global->mtx_for_death);
+}
+
+int	check_meals(t_philo *philo)
+{
+	if (philo->global->nr_must_eat != -1)
+	{
+		pthread_mutex_lock(&philo->mtx_for_fullness);
+		if (philo->i_am_full != 1)
+		{
+			if (philo->times_eaten == philo->global->nr_must_eat)
+			{
+				philo->i_am_full = 1;
+				pthread_mutex_lock(&philo->global->mtx_print);
+				printf(" %d is full\n", philo->id);
+				pthread_mutex_unlock(&philo->global->mtx_print);
+				pthread_mutex_unlock(&philo->mtx_for_fullness);
+				return 1;
+			}
+		}
+	}
+	pthread_mutex_unlock(&philo->mtx_for_fullness);
+	return 0;
 }
 
 void	*philo_routine(void *arg)
@@ -50,58 +84,92 @@ void	*philo_routine(void *arg)
 
 	philo = (t_philo *)arg;
 	pthread_mutex_lock(&philo->global->mtx_global);
-	if (philo->global->someone_died == 1)
-	{
-		pthread_mutex_unlock(&philo->global->mtx_global);
-		return NULL;
-	}
+	pthread_mutex_unlock(&philo->global->mtx_global);
 	if (philo->id % 2 == 0)
-		ft_usleep(philo->global->eat_time/10);
+		ft_usleep(100);
 	while (1)
 	{
+		check_death(philo);
+
 		pthread_mutex_lock(&philo->right_fork);
-			print_str(*philo, "has taken right fork");
+		print_str(philo, "has taken right fork");
 		pthread_mutex_lock(philo->left_fork);
-		print_str(*philo, "has taken left fork");
-		usleep(philo->global->sleep_time * 1000);
-		print_str(*philo, "is eating");
-		philo->times_eaten += 1;
-		usleep(philo->global->eat_time * 1000);
-		pthread_mutex_lock(&philo->global->mtx_for_god);
+		print_str(philo, "has taken left fork");
+		print_str(philo, "is eating");
+		ft_usleep(philo->global->eat_time);
+		pthread_mutex_lock(&philo->mtx_last_tm_eat);
+		philo->times_eaten++;
 		philo->last_time_eaten = ft_get_time(philo->global->tm_begin);
-		pthread_mutex_unlock(&philo->global->mtx_for_god);
-		pthread_mutex_unlock(&philo->global->mtx_global);
+		pthread_mutex_unlock(&philo->mtx_last_tm_eat);
 		pthread_mutex_unlock(&philo->right_fork);
 		pthread_mutex_unlock(philo->left_fork);
-		print_str(*philo, "is sleeping");
-		usleep(philo->global->sleep_time * 1000);
-		print_str(*philo, "is thinking");
+		if (check_meals(philo) == 1)
+			return (NULL);
+		check_death(philo);
+		print_str(philo, "is sleeping");
+		ft_usleep(philo->global->sleep_time);
+		check_death(philo);
+		print_str(philo, "is thinking");
 	}
-	return NULL;
+	return (NULL);
 }
 
-int god(t_philo *philo, t_global *global)
+int we_are_full(t_global *global)
 {
+	int i;
+	int j;
+
+	i = 0;
+	j = 0;
+	while (i < global->nr_ph)
+	{
+		if (global->philosophers[i].i_am_full == 1)
+            j++;
+        i++;
+    }
+    if (j == i)
+    	return 1;
+    else
+    	return 0;
+}
+
+void *god(void *arg)
+{
+    t_global *global = (t_global *)arg;
     int i;
     long last_time_eaten;
+    long current_time;
 
     while (1)
     {
-        pthread_mutex_lock(&global->mtx_global);
-        for (i = 0; i < global->nr_ph; i++)
+    	i = 0;
+        while (i < global->nr_ph)
         {
-        	pthread_mutex_lock(&philo->global->mtx_for_god);
-            last_time_eaten = philo[i].last_time_eaten;
-            pthread_mutex_unlock(&philo->global->mtx_for_god);
-            if (ft_get_time(global->tm_begin) - last_time_eaten > global->die_time)
+            pthread_mutex_lock(&global->philosophers[i].mtx_last_tm_eat);
+            last_time_eaten = global->philosophers[i].last_time_eaten;
+            current_time = ft_get_time(global->tm_begin);
+            pthread_mutex_unlock(&global->philosophers[i].mtx_last_tm_eat);
+            if (current_time - last_time_eaten > global->die_time)
             {
+               	pthread_mutex_lock(&global->mtx_global);
+            	int j = 0;
+                while (j < global->nr_ph)
+                	pthread_mutex_lock(global->philosophers[j++].left_fork);
+                pthread_mutex_lock(&global->mtx_for_death);
                 global->someone_died = 1;
-                pthread_mutex_unlock(&global->mtx_global);
-            	return 1;
+                pthread_mutex_unlock(&global->mtx_for_death);
+                print_str(&global->philosophers[i], "has died");
+                //join_all(global->philosophers);
+                //pthread_mutex_unlock(&global->mtx_global);
+                return NULL;
             }
+            if (we_are_full(global) == 1)
+            {
+            	//join_all(global->philosophers);
+            	return NULL;
+            }
+            i++;
         }
-        pthread_mutex_unlock(&global->mtx_global);
     }
-    return 0;
+    return NULL;
 }
-

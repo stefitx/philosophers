@@ -41,12 +41,14 @@ int	wrong_args(int argc, char **argv, t_global *global)
 		{
 			pthread_mutex_init(&global->mtx_print, NULL);
 			pthread_mutex_init(&global->mtx_global, NULL);
-			pthread_mutex_init(&global->mtx_for_god, NULL);
+			pthread_mutex_init(&global->mtx_for_death, NULL);
 			pthread_mutex_lock(&global->mtx_global);
 			global->nr_ph = ft_atoi(argv[1]);
 			global->die_time = ft_atoi(argv[2]);
 			global->eat_time = ft_atoi(argv[3]);
 			global->sleep_time = ft_atoi(argv[4]);
+			global->someone_died = 0;
+		//	printf("%d, %d, %d, %d", global->nr_ph, global->die_time , global->eat_time, global->sleep_time);
 			if (argc == 6)
 				global->nr_must_eat = ft_atoi(argv[5]);
 			else if (argc == 5)
