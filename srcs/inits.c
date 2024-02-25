@@ -90,7 +90,6 @@ void	*philo_routine(void *arg)
 	while (1)
 	{
 		check_death(philo);
-
 		pthread_mutex_lock(&philo->right_fork);
 		print_str(philo, "has taken right fork");
 		pthread_mutex_lock(philo->left_fork);
@@ -159,17 +158,14 @@ void *god(void *arg)
                 global->someone_died = 1;
                 pthread_mutex_unlock(&global->mtx_for_death);
                 print_str(&global->philosophers[i], "has died");
-                //join_all(global->philosophers);
-                //pthread_mutex_unlock(&global->mtx_global);
                 return NULL;
             }
             if (we_are_full(global) == 1)
-            {
-            	//join_all(global->philosophers);
             	return NULL;
-            }
             i++;
         }
     }
     return NULL;
 }
+
+//deal with case of only 1 philo
