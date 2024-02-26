@@ -52,7 +52,6 @@ int	wrong_args(int argc, char **argv, t_global *global)
 				write(2, "Error!\n", 8);
 				return (1);
 			}
-		//	printf("%d, %d, %d, %d", global->nr_ph, global->die_time , global->eat_time, global->sleep_time);
 			if (argc == 6)
 				global->nr_must_eat = ft_atoi(argv[5]);
 			else if (argc == 5)
@@ -65,5 +64,3 @@ int	wrong_args(int argc, char **argv, t_global *global)
 	write(2, "[nr_of_times_each_philosopher_must_eat]\n", 41);
 	return (1);
 }
-
-//deal with case of 0 philos

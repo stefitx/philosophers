@@ -40,7 +40,6 @@ void	init_thread(t_global *global, t_philo *philo)
 	int i;
 	i = 0;
 	
-	pthread_create(&global->god_t, NULL, &god, global);
 	while (i < global->nr_ph)
 	{
 		pthread_create(&philo[i].thread, NULL, &philo_routine, &philo[i]);
@@ -122,8 +121,10 @@ int we_are_full(t_global *global)
 	j = 0;
 	while (i < global->nr_ph)
 	{
+		pthread_mutex_lock(&global->philosophers[i].mtx_for_fullness);
 		if (global->philosophers[i].i_am_full == 1)
             j++;
+        pthread_mutex_unlock(&global->philosophers[i].mtx_for_fullness);
         i++;
     }
     if (j == i)
@@ -132,9 +133,8 @@ int we_are_full(t_global *global)
     	return 0;
 }
 
-void *god(void *arg)
+void	god(t_global *global)
 {
-    t_global *global = (t_global *)arg;
     int i;
     long last_time_eaten;
     long current_time;
@@ -158,14 +158,14 @@ void *god(void *arg)
                 global->someone_died = 1;
                 pthread_mutex_unlock(&global->mtx_for_death);
                 print_str(&global->philosophers[i], "has died");
-                return NULL;
+                return ;
             }
             if (we_are_full(global) == 1)
-            	return NULL;
+            	return ;
             i++;
         }
     }
-    return NULL;
 }
 
-//deal with case of only 1 philo
+//if args are ./philo 2 1 200 0, 2 should be already dead.
+//relinks

@@ -26,8 +26,6 @@ INC	= -I inc/\
 LIBFT_DIR = inc/libft/
 LIBFT_A = $(LIBFT_DIR)/libft.a
 
-$(info $(SRCS))
-
 all: dir $(NAME)
 -include $(DEPS)
 

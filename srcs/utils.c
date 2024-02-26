@@ -18,29 +18,17 @@ long	ft_get_time(long time_start)
 
 	if (gettimeofday(&tv, NULL))
 		return (printf("gettimeofday() FAILURE\n"));
-	return ((tv.tv_sec * (long)1000) + (tv.tv_usec / 1000) - time_start);
+	return (((tv.tv_sec * (long)1000) + (tv.tv_usec / 1000)) - time_start);
 }
 
 void	print_str(t_philo *philo, char *str)
 {
 	long	tm;
 
-	pthread_mutex_lock(&philo->global->mtx_for_death);
-	if (philo->global->someone_died != 1)
-	{
 		pthread_mutex_lock(&philo->global->mtx_print);
 		tm = ft_get_time(philo->global->tm_begin);
 		printf("[%lu] %d %s\n",tm, philo->id, str);
 		pthread_mutex_unlock(&philo->global->mtx_print);
-	}
-	if (philo->global->someone_died == 1)
-	{
-		pthread_mutex_lock(&philo->global->mtx_print);
-		tm = ft_get_time(philo->global->tm_begin);
-		printf("[%lu] %d %s\n",tm, philo->id, str);
-		pthread_mutex_unlock(&philo->global->mtx_print);
-	}
-	pthread_mutex_unlock(&philo->global->mtx_for_death);
 }
 
 void	ft_usleep(long long time)

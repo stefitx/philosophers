@@ -54,7 +54,7 @@ int		wrong_args(int argc, char **argv, t_global *global);
 void	init_philo(t_global *global, t_philo *philo);
 void	print_str(t_philo *philo, char *str);
 void	*philo_routine(void *arg);
-void	*god(void *arg);
+void	god(t_global *global);
 void	init_thread(t_global *global, t_philo *philo);
 long	ft_get_time(long time_start);
 void	ft_usleep(long long time);

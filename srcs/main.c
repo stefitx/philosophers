@@ -24,9 +24,13 @@ int    case_of_one(t_global *global, t_philo *philo)
 {
     if (global->nr_ph == 1)
     {
+        pthread_mutex_init(&philo[0].right_fork, NULL);
+        philo[0].id = 1;
+        global->philosophers = philo;
+        philo[0].global = global;
         global->tm_begin = ft_get_time(0);
         pthread_create(&philo[0].thread, NULL, &philo_one, &philo[0]);
-        join_all(philo);
+        pthread_join(philo[0].thread, NULL);
         free(philo);
         return 1;
     }
@@ -55,13 +59,13 @@ int main(int argc, char **argv)
         philo = malloc(sizeof(t_philo) * global.nr_ph);
         if (!philo)
             return 0;
-        init_philo(&global, philo);
         if (case_of_one(&global, philo) == 1)
             return 0;
+        init_philo(&global, philo);
         init_thread(&global, philo);
         global.tm_begin = ft_get_time(0);
         pthread_mutex_unlock(&global.mtx_global);
-        pthread_join(global.god_t, NULL);
+        god(&global);
         join_all(philo);
         free(philo);
     }
