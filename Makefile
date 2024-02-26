@@ -21,31 +21,26 @@ OBJS	= $(addprefix $(OBJS_DIR)/, $(SRCS:.c=.o))
 DEPS	= $(addprefix $(OBJS_DIR)/, $(SRCS:.c=.d))
 
 
-INC	= -I inc/\
-	 -I inc/libft/
-LIBFT_DIR = inc/libft/
-LIBFT_A = $(LIBFT_DIR)/libft.a
+INC	= -I inc/
+
 
 all: dir $(NAME)
 -include $(DEPS)
 
 dir:
 	-mkdir -p $(OBJS_DIR)
-	make -C $(LIBFT_DIR)
 
 $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c Makefile
 	$(CC) -MMD $(FLAGS) -c $< -o $@
 	echo $@
 
 $(NAME): $(OBJS)
-	$(CC) $(FLAGS) $(OBJS) $(LIBFT_A) -o $(NAME)
+	$(CC) $(FLAGS) $(OBJS) -o $(NAME)
 
 clean:
-	make clean -C $(LIBFT_DIR)
 	$(RM) $(OBJS_DIR)
 
 fclean: clean
-	make fclean -C $(LIBFT_DIR)
 	$(RM) $(NAME)
 
 re: fclean all

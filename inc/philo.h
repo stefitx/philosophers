@@ -18,7 +18,6 @@
 # include <stdlib.h>
 # include <pthread.h>
 # include <sys/time.h>
-#include "../inc/libft/libft.h"
 
 typedef struct s_global
 {
@@ -61,5 +60,6 @@ void	ft_usleep(long long time);
 long get_time_from_begin(unsigned long time, t_global *global);
 void    join_all(t_philo *philo);
 void    *philo_one(void *arg);
+void	put_em_to_sleep(t_global *global);
 
 # endif

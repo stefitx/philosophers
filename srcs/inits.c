@@ -95,12 +95,12 @@ void	*philo_routine(void *arg)
 		print_str(philo, "has taken left fork");
 		print_str(philo, "is eating");
 		ft_usleep(philo->global->eat_time);
+		pthread_mutex_unlock(&philo->right_fork);
+		pthread_mutex_unlock(philo->left_fork);
 		pthread_mutex_lock(&philo->mtx_last_tm_eat);
 		philo->times_eaten++;
 		philo->last_time_eaten = ft_get_time(philo->global->tm_begin);
 		pthread_mutex_unlock(&philo->mtx_last_tm_eat);
-		pthread_mutex_unlock(&philo->right_fork);
-		pthread_mutex_unlock(philo->left_fork);
 		if (check_meals(philo) == 1)
 			return (NULL);
 		check_death(philo);
@@ -150,13 +150,13 @@ void	god(t_global *global)
             pthread_mutex_unlock(&global->philosophers[i].mtx_last_tm_eat);
             if (current_time - last_time_eaten > global->die_time)
             {
+            	pthread_mutex_lock(&global->mtx_for_death);
+                global->someone_died = 1;
+                pthread_mutex_unlock(&global->mtx_for_death);
                	pthread_mutex_lock(&global->mtx_global);
             	int j = 0;
                 while (j < global->nr_ph)
                 	pthread_mutex_lock(global->philosophers[j++].left_fork);
-                pthread_mutex_lock(&global->mtx_for_death);
-                global->someone_died = 1;
-                pthread_mutex_unlock(&global->mtx_for_death);
                 print_str(&global->philosophers[i], "has died");
                 return ;
             }
