@@ -6,12 +6,12 @@
 #    By: atudor <atudor@student.42barcelon>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/07 16:19:40 by atudor            #+#    #+#              #
-#    Updated: 2024/02/10 17:35:45 by atudor           ###   ########.fr        #
+#    Updated: 2024/02/25 21:52:35 by atudor           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME	= philos
-FLAGS	= -Wall -Wextra -Werror -g #-fsanitize=thread
+NAME	= philo
+FLAGS	= -Wall -Wextra -Werror -g -fsanitize=thread
 RM		= rm -rf
 
 SRCS_DIR = ./srcs

@@ -60,5 +60,6 @@ long	ft_get_time(long time_start);
 void	ft_usleep(long long time);
 long get_time_from_begin(unsigned long time, t_global *global);
 void    join_all(t_philo *philo);
+void    *philo_one(void *arg);
 
 # endif

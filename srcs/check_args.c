@@ -12,7 +12,6 @@
 
 #include "../inc/philo.h"
 
-
 int	check_digit(int argc, char **argv)
 {
 	int	i;
@@ -48,6 +47,11 @@ int	wrong_args(int argc, char **argv, t_global *global)
 			global->eat_time = ft_atoi(argv[3]);
 			global->sleep_time = ft_atoi(argv[4]);
 			global->someone_died = 0;
+			if (global->nr_ph == 0)
+			{
+				write(2, "Error!\n", 8);
+				return (1);
+			}
 		//	printf("%d, %d, %d, %d", global->nr_ph, global->die_time , global->eat_time, global->sleep_time);
 			if (argc == 6)
 				global->nr_must_eat = ft_atoi(argv[5]);

@@ -20,6 +20,30 @@ void    join_all(t_philo *philo)
     }
 }
 
+int    case_of_one(t_global *global, t_philo *philo)
+{
+    if (global->nr_ph == 1)
+    {
+        global->tm_begin = ft_get_time(0);
+        pthread_create(&philo[0].thread, NULL, &philo_one, &philo[0]);
+        join_all(philo);
+        free(philo);
+        return 1;
+    }
+    return 0;
+}
+
+void    *philo_one(void *arg)
+{
+    t_philo *philo;
+
+    philo = (t_philo *)arg;
+    pthread_mutex_lock(&philo->right_fork);
+    print_str(philo, "has taken right fork");
+    ft_usleep(philo->global->die_time);
+    print_str(philo, "has died");
+    return NULL;
+}
 
 int main(int argc, char **argv)
 {
@@ -32,6 +56,8 @@ int main(int argc, char **argv)
         if (!philo)
             return 0;
         init_philo(&global, philo);
+        if (case_of_one(&global, philo) == 1)
+            return 0;
         init_thread(&global, philo);
         global.tm_begin = ft_get_time(0);
         pthread_mutex_unlock(&global.mtx_global);
