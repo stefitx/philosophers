@@ -14,39 +14,33 @@ NAME	= philo
 FLAGS	= -Wall -Wextra -Werror -g #-fsanitize=thread
 RM		= rm -rf
 
-SRCS_DIR = ./srcs
-SRCS	= main.c check_args.c inits.c utils.c
-OBJS_DIR	= ./srcs/obj
-OBJS	= $(addprefix $(OBJS_DIR)/, $(SRCS:.c=.o))
-DEPS	= $(addprefix $(OBJS_DIR)/, $(SRCS:.c=.d))
+HEADER = inc/philo.h
+SRCS	= srcs/main.c srcs/check_args.c srcs/inits.c srcs/utils.c
 
+OBJS = ${SRCS:.c=.o}
 
-INC	= -I inc/
+%.o:%.c 	$(HEADER) Makefile
+			$(CC) $(CFLAGS) -c $< -o $@
 
+all: 		${NAME}
 
-all: dir $(NAME)
--include $(DEPS)
+${NAME}:	${OBJS}
+			gcc ${FLAGS} -o ${NAME} ${OBJS}
 
-dir:
-	-mkdir -p $(OBJS_DIR)
+bonus:		${OBJS} ${OBJSBONUS}
+			gcc ${FLAGS} ${NAME} ${OBJS} ${OBJSBONUS}
+			@touch $@
 
-$(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c Makefile
-	$(CC) -MMD $(FLAGS) -c $< -o $@
-	echo $@
+clean: 		
+			${RM} ${OBJS} ${OBJSBONUS}
 
-$(NAME): $(OBJS)
-	$(CC) $(FLAGS) $(OBJS) -o $(NAME)
+fclean: 	clean
+			${RM} ${NAME}
+			${RM} bonus
 
-clean:
-	$(RM) $(OBJS_DIR)
+re:			fclean all
 
-fclean: clean
-	$(RM) $(NAME)
-
-re: fclean all
-.PHONY:		dir all clean fclean re
-.SILENT:
-
+.PHONY: all clean fclean re
 	
 
 

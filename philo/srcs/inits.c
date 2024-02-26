@@ -163,6 +163,3 @@ void	god(t_global *global)
         }
     }
 }
-
-//if args are ./philo 2 1 200 0, 2 should be already dead.
-//relinks
