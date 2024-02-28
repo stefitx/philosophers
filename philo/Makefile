@@ -11,11 +11,11 @@
 # **************************************************************************** #
 
 NAME	= philo
-FLAGS	= -Wall -Wextra -Werror -g #-fsanitize=thread
+FLAGS	= -Wall -Wextra -Werror #-g -fsanitize=thread
 RM		= rm -rf
 
 HEADER = inc/philo.h
-SRCS	= srcs/main.c srcs/check_args.c srcs/inits.c srcs/utils.c
+SRCS	= srcs/main.c srcs/check_args.c srcs/inits.c srcs/utils.c srcs/routine.c
 
 OBJS = ${SRCS:.c=.o}
 

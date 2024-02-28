@@ -20,32 +20,25 @@ int	ft_isdigit(char c)
 		return (0);
 }
 
-int	ft_atoi(const char *str)
+long long	ft_atoi(char *str)
 {
-	int	i;
-	int	sign;
-	int	nb;
+	int			i;
+	long long	nb;
 
-	sign = 1;
 	nb = 0;
 	i = 0;
-	while (str[i] == ' ' || (str[i] >= 9 && str[i] <= 13))
-	{
-		i++;
-	}
-	if (str[i] == '-' || str[i] == '+')
-	{
-		if (str[i] == '-')
-			sign = -1;
-		i++;
-	}
 	while (str[i] >= '0' && str[i] <= '9')
 	{
 		nb = (nb * 10) + (str[i] - '0');
 		i++;
 	}
-	nb *= sign;
-	return (nb);
+	if (nb <= 2147483647)
+		return (nb);
+	else
+	{
+		write(2, "Number too big!\n", 17);
+		return (0);
+	}
 }
 
 int	check_digit(int argc, char **argv)
@@ -68,22 +61,28 @@ int	check_digit(int argc, char **argv)
 	return (0);
 }
 
+void	fill_args(char **argv, t_global *global)
+{
+	pthread_mutex_init(&global->mtx_print, NULL);
+	pthread_mutex_init(&global->mtx_global, NULL);
+	pthread_mutex_init(&global->mtx_for_death, NULL);
+	pthread_mutex_lock(&global->mtx_global);
+	global->nr_ph = ft_atoi(argv[1]);
+	global->die_time = ft_atoi(argv[2]);
+	global->eat_time = ft_atoi(argv[3]);
+	global->sleep_time = ft_atoi(argv[4]);
+	global->someone_died = 0;
+}
+
 int	wrong_args(int argc, char **argv, t_global *global)
 {
 	if (argc >= 5 && argc <= 6)
 	{
 		if (!check_digit(argc, argv))
 		{
-			pthread_mutex_init(&global->mtx_print, NULL);
-			pthread_mutex_init(&global->mtx_global, NULL);
-			pthread_mutex_init(&global->mtx_for_death, NULL);
-			pthread_mutex_lock(&global->mtx_global);
-			global->nr_ph = ft_atoi(argv[1]);
-			global->die_time = ft_atoi(argv[2]);
-			global->eat_time = ft_atoi(argv[3]);
-			global->sleep_time = ft_atoi(argv[4]);
-			global->someone_died = 0;
-			if (global->nr_ph == 0)
+			fill_args(argv, global);
+			if (global->nr_ph == 0 || global->die_time == 0
+				|| global->eat_time == 0 || global->sleep_time == 0)
 			{
 				write(2, "Error!\n", 8);
 				return (1);

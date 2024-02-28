@@ -24,10 +24,17 @@ long	ft_get_time(long time_start)
 void	print_str(t_philo *philo, char *str)
 {
 	long	tm;
+	int		dead;
 
 	pthread_mutex_lock(&philo->global->mtx_print);
-	tm = ft_get_time(philo->global->tm_begin);
-	printf("[%lu] %d %s\n",tm, philo->id, str);
+	pthread_mutex_lock(&philo->global->mtx_for_death);
+	dead = philo->global->someone_died;
+	pthread_mutex_unlock(&philo->global->mtx_for_death);
+	if (!dead)
+	{
+		tm = ft_get_time(philo->global->tm_begin);
+		printf("[%lu] %d %s\n", tm, philo->id, str);
+	}
 	pthread_mutex_unlock(&philo->global->mtx_print);
 }
 
@@ -37,4 +44,3 @@ void	ft_usleep(long long time)
 	while (ft_get_time(0) <= time)
 		usleep(200);
 }
-
