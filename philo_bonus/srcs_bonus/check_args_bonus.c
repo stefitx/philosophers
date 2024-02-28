@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   check_args.c                                       :+:      :+:    :+:   */
+/*   check_args_bonus.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: atudor <atudor@student.42barcelon>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/09 21:07:38 by atudor            #+#    #+#             */
-/*   Updated: 2024/02/09 21:07:40 by atudor           ###   ########.fr       */
+/*   Created: 2024/02/28 20:13:16 by atudor            #+#    #+#             */
+/*   Updated: 2024/02/28 20:13:18 by atudor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/philo.h"
+#include "../inc_bonus/philo_bonus.h"
 
 int	ft_isdigit(char c)
 {
@@ -63,15 +63,10 @@ int	check_digit(int argc, char **argv)
 
 void	fill_args(int argc, char **argv, t_global *global)
 {
-	pthread_mutex_init(&global->mtx_print, NULL);
-	pthread_mutex_init(&global->mtx_global, NULL);
-	pthread_mutex_init(&global->mtx_for_death, NULL);
-	pthread_mutex_lock(&global->mtx_global);
 	global->nr_ph = ft_atoi(argv[1]);
 	global->die_time = ft_atoi(argv[2]);
 	global->eat_time = ft_atoi(argv[3]);
 	global->sleep_time = ft_atoi(argv[4]);
-	global->someone_died = 0;
 	if (argc == 6)
 		global->nr_must_eat = ft_atoi(argv[5]);
 	else if (argc == 5)
@@ -100,3 +95,4 @@ int	wrong_args(int argc, char **argv, t_global *global)
 	write(2, "[nr_of_times_each_philosopher_must_eat]\n", 41);
 	return (1);
 }
+

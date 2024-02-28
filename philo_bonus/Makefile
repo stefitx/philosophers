@@ -5,17 +5,19 @@
 #                                                     +:+ +:+         +:+      #
 #    By: atudor <atudor@student.42barcelon>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/02/07 16:19:40 by atudor            #+#    #+#              #
-#    Updated: 2024/02/28 20:02:40 by atudor           ###   ########.fr        #
+#    Created: 2024/02/28 20:13:56 by atudor            #+#    #+#              #
+#    Updated: 2024/02/28 20:13:58 by atudor           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME	= philo
-FLAGS	= -Wall -Wextra -Werror #-g -fsanitize=thread
+
+NAME	= philo_bonus
+FLAGS	= -Wall -Wextra -Werror -g -fsanitize=thread
 RM		= rm -rf
 
-HEADER = inc/philo.h
-SRCS	= srcs/main.c srcs/check_args.c srcs/inits.c srcs/utils.c srcs/routine.c
+HEADER = inc_bonus/philo_bonus.h
+SRCS	= srcs_bonus/main_bonus.c srcs_bonus/check_args_bonus.c \
+srcs_bonus/inits_bonus.c srcs_bonus/utils_bonus.c srcs_bonus/routine_bonus.c
 
 OBJS = ${SRCS:.c=.o}
 
@@ -38,17 +40,3 @@ re:			fclean all
 
 .PHONY: all clean fclean re
 	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
