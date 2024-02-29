@@ -32,9 +32,12 @@ void	print_str(t_philo *philo, char *str)
 	sem_post(philo->global->print);
 }
 
-void	ft_usleep(long long time)
+void	ft_usleep(long long time, t_global *global, t_philo *philo)
 {
 	time += ft_get_time(0);
 	while (ft_get_time(0) <= time)
-		usleep(200);
+	{
+		check_death(global, philo);
+		usleep(110);
+	}
 }

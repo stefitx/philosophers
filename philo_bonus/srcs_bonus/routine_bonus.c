@@ -22,13 +22,32 @@ void	check_death(t_global *global, t_philo *philo)
 	if (current_time - last_time_eaten > global->die_time)
 	{
 		sem_wait(global->print);
-		printf("[%lu] %d %s\n", current_time, philo->id, "has died");
+		printf("[%lu] %d has died\n", current_time, philo->id);
 
 		for (int i = 0; i < global->nr_ph * 2; i++)
 			sem_post(global->death);
-		
 		exit(0);
 	}
+}
+
+int	check_meals(t_global *global, t_philo *philo)
+{
+	long	tm;
+
+	if (global->nr_must_eat != -1)
+	{
+		if (philo->times_eaten == global->nr_must_eat)
+		{
+			philo->i_am_full = 1;
+			tm = ft_get_time(philo->global->tm_begin);
+			sem_wait(global->print);
+			printf("[%lu] %d is full\n", tm, philo->id);
+			sem_post(global->print);
+			sem_post(global->death);
+			exit(0);
+		}
+	}
+	return (0);
 }
 
 void	philo_routine(t_global *global, t_philo *philo, sem_t *forks)
@@ -47,14 +66,14 @@ void	philo_routine(t_global *global, t_philo *philo, sem_t *forks)
 		print_str(philo, "is eating");
 		philo->times_eaten++;
 		philo->last_time_eaten = ft_get_time(philo->global->tm_begin);
-		ft_usleep(philo->global->eat_time);
+		ft_usleep(philo->global->eat_time, global, philo);
 		sem_post(forks);
 		sem_post(forks);
-		// if (check_meals(philo) == 1)
-		// 	return (NULL);
+		if (check_meals(global, philo) == 1)
+			break ;
 		check_death(global, philo);
 		print_str(philo, "is sleeping");
-		ft_usleep(philo->global->sleep_time);
+		ft_usleep(philo->global->sleep_time, global, philo);
 		check_death(global, philo);
 		print_str(philo, "is thinking");
 		i++;
@@ -73,5 +92,3 @@ void	philo_routine(t_global *global, t_philo *philo, sem_t *forks)
 // [21] 1 has died
 
 //fix this!!
-// deal with case of 1
-// deal with fullness

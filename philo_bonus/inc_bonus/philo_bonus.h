@@ -49,11 +49,12 @@ typedef struct s_philo
 }	t_philo;
 
 
-//inits
+//inits 
 
 void	philo_routine(t_global *global, t_philo *philo, sem_t *forks);
 void	init_philo(t_global *global, t_philo *philo);
 void	init_process(t_global *global, t_philo *philo, sem_t *forks);
+int	case_of_one(t_global *global, t_philo *philo);
 
 //check_args
 
@@ -67,6 +68,11 @@ int			wrong_args(int argc, char **argv, t_global *global);
 
 long	ft_get_time(long time_start);
 void	print_str(t_philo *philo, char *str);
-void	ft_usleep(long long time);
+void	ft_usleep(long long time, t_global *global, t_philo *philo);
+
+//routine
+
+int	we_are_full(t_global *global);
+void	check_death(t_global *global, t_philo *philo);
 
 #endif
