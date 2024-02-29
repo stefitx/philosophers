@@ -24,14 +24,14 @@ void	join_all(t_philo *philo)
 	}
 }
 
-void	rest_in_peace(t_global *global, long i)
+void	rest_in_peace(t_global *global, long tm, int i)
 {
 	pthread_mutex_lock(&global->mtx_for_death);
 	global->someone_died = 1;
 	pthread_mutex_unlock(&global->mtx_for_death);
 	pthread_mutex_lock(&global->mtx_global);
 	pthread_mutex_lock(&global->mtx_print);
-	printf("[%lu] %d %s\n", i, global->philosophers[i].id, "has died");
+	printf("[%lu] %d %s\n", tm, global->philosophers[i].id, "has died");
 	pthread_mutex_unlock(&global->mtx_print);
 }
 
@@ -52,7 +52,7 @@ void	god(t_global *global)
 			pthread_mutex_unlock(&global->philosophers[i].mtx_last_tm_eat);
 			if (current_time - last_time_eaten > global->die_time)
 			{
-				rest_in_peace(global, current_time);
+				rest_in_peace(global, current_time, i);
 				return ;
 			}
 			if (we_are_full(global) == 1)
@@ -73,7 +73,10 @@ int	main(int argc, char **argv)
 		if (!philo)
 			return (0);
 		if (case_of_one(&global, philo) == 1)
+		{
+			free(philo);
 			return (0);
+		}
 		init_philo(&global, philo);
 		init_thread(&global, philo);
 		global.tm_begin = ft_get_time(0);

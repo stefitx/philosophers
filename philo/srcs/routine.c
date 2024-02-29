@@ -66,7 +66,7 @@ void	*philo_routine(void *arg)
 	pthread_mutex_lock(&philo->global->mtx_global);
 	pthread_mutex_unlock(&philo->global->mtx_global);
 	if (philo->id % 2 == 0)
-		ft_usleep(philo->global->eat_time / 2);
+		ft_usleep(philo->global->eat_time / 10);
 	while (1)
 	{
 		living_well(philo);
