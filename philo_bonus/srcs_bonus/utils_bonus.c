@@ -28,7 +28,7 @@ void	print_str(t_philo *philo, char *str)
 
 	sem_wait(philo->global->print);
 	tm = ft_get_time(philo->global->tm_begin);
-	printf("[%lu] %d %s\n", tm, philo->id, str);
+	printf(YELLOW "[%lu]" WHITE " %d %s\n", tm, philo->id, str);
 	sem_post(philo->global->print);
 }
 

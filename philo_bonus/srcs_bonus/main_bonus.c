@@ -30,6 +30,7 @@ int	main(int argc, char **argv)
 		print = sem_open("print", O_CREAT, 0644, 1);
 		if (case_of_one(&global, philo) == 1)
 		{
+			ft_usleep(global.die_time, &global, philo);
 			sem_close(forks);
 			sem_unlink("forks");
 			sem_close(death);
@@ -46,19 +47,28 @@ int	main(int argc, char **argv)
 		global.print = print;
 		global.tm_begin = ft_get_time(0);
 		init_process(&global, philo, forks);
-		if (global.nr_must_eat > 0)
+
+		int status;
+		pid_t pid;
+		int terminated_count = 0;
+
+		// while (terminated_count < global.nr_ph) 
+		// {
+    	// 	pid = waitpid(-1, &status, 0); // Wait for any child process to terminate
+    	// 	if (pid > 0)
+        // 		terminated_count++;
+		// }
+		int i = 0;
+		while (i < global.nr_ph)
 		{
-			int i = 0;
-			while (i < global.nr_ph)
-				{
-					sem_wait(death);
-					i++;
-				}
-		}
-		else
 			sem_wait(death);
+			i++;
+		}
 		for (int i = 0; i < global.nr_ph; i++)
+		{
+			printf("%d\n", philo[i].pid);
     		kill(philo[i].pid, SIGQUIT);
+		}
 		sem_close(forks);
 		sem_unlink("forks");
 		sem_close(death);

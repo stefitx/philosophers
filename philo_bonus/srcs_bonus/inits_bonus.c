@@ -39,8 +39,6 @@ void	init_process(t_global *global, t_philo *philo, sem_t *forks)
 		philo[i].pid = fork();
 		if (philo[i].pid == 0)
 		{
-			// if (philo->id % 2 == 0)
-			// 	ft_usleep(philo->global->eat_time / 2, global, philo);
 			philo_routine(global, &philo[i], forks);
 			exit(0);
 		}
@@ -60,10 +58,8 @@ int	case_of_one(t_global *global, t_philo *philo)
 		if (philo[0].pid == 0)
 		{
 			sem_wait(global->forks);
-			print_str(&philo[0], "has taken right fork");
-			ft_usleep(global->die_time, global, philo);
-			print_str(&philo[0], "has died");
-			sem_post(global->death);
+			print_str(&philo[0], "has taken a fork");
+			ft_usleep(global->die_time + 10, global, philo);
 			exit(0);
 		}
 		return 1;

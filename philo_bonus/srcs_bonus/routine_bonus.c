@@ -22,8 +22,7 @@ void	check_death(t_global *global, t_philo *philo)
 	if (current_time - last_time_eaten > global->die_time)
 	{
 		sem_wait(global->print);
-		printf("[%lu] %d has died\n", current_time, philo->id);
-
+		printf(RED "[%lu] %d died\n" RESET, current_time, philo->id);
 		for (int i = 0; i < global->nr_ph * 2; i++)
 			sem_post(global->death);
 		exit(0);
@@ -41,10 +40,10 @@ int	check_meals(t_global *global, t_philo *philo)
 			philo->i_am_full = 1;
 			tm = ft_get_time(philo->global->tm_begin);
 			sem_wait(global->print);
-			printf("[%lu] %d is full\n", tm, philo->id);
+			printf(MAGENTA "[%lu]" GREEN " %d is full\n" RESET, tm, philo->id);
 			sem_post(global->print);
 			sem_post(global->death);
-			exit(0);
+			return (1);
 		}
 	}
 	return (0);
@@ -57,11 +56,11 @@ void	philo_routine(t_global *global, t_philo *philo, sem_t *forks)
 	{
 		check_death(global, philo);
 		sem_wait(forks);
-		print_str(philo, "has taken right fork");
+		print_str(philo, "has taken a fork");
 		check_death(global, philo);
 		sem_wait(forks);
 		check_death(global, philo);
-		print_str(philo, "has taken left fork");
+		print_str(philo, "has taken a fork");
 		check_death(global, philo);
 		print_str(philo, "is eating");
 		philo->times_eaten++;
@@ -70,7 +69,7 @@ void	philo_routine(t_global *global, t_philo *philo, sem_t *forks)
 		sem_post(forks);
 		sem_post(forks);
 		if (check_meals(global, philo) == 1)
-			break ;
+			exit(0) ;
 		check_death(global, philo);
 		print_str(philo, "is sleeping");
 		ft_usleep(philo->global->sleep_time, global, philo);
@@ -80,15 +79,3 @@ void	philo_routine(t_global *global, t_philo *philo, sem_t *forks)
 	}
 	return ;
 }
-
-// ❯ ./philo_bonus 5 1 20 200
-// [0] 1 has taken right fork
-// [0] 1 has taken left fork
-// [0] 1 is eating
-// [0] 2 has taken right fork
-// [0] 2 has taken left fork
-// [0] 2 is eating
-// [0] 3 has taken right fork
-// [21] 1 has died
-
-//fix this!!

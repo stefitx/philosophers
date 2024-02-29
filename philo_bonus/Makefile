@@ -12,7 +12,7 @@
 
 
 NAME	= philo_bonus
-FLAGS	= -Wall -Wextra -Werror #-g -fsanitize=thread
+FLAGS	= -Wall -Wextra -Werror #-g -fsanitize=address
 RM		= rm -rf
 
 HEADER = inc_bonus/philo_bonus.h
@@ -39,4 +39,3 @@ fclean: 	clean
 re:			fclean all
 
 .PHONY: all clean fclean re
-	
