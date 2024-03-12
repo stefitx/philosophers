@@ -12,6 +12,48 @@
 
 #include "../inc_bonus/philo_bonus.h"
 
+void	close_sems(t_global	*global)
+{
+	sem_close(global->forks);
+	sem_unlink("forks");
+	sem_close(global->death);
+	sem_unlink("death");
+	sem_close(global->print);
+	sem_unlink("print");
+	free(global->philosophers);
+}
+
+void	terminate(t_global *global)
+{
+	int		status;
+	pid_t	pid;
+	int		terminated_count;
+	int		i;
+
+	terminated_count = 0;
+	i = 0;
+	while (i < global->nr_ph)
+	{
+		sem_wait(global->death);
+		i++;
+	}
+	i = 0;
+	while (i < global->nr_ph)
+	{
+		kill(global->philosophers[i].pid, SIGQUIT);
+		i++;
+	}
+	close_sems(global);
+}
+
+void	init_global(t_global *global, sem_t *forks, sem_t *death, sem_t *print)
+{
+	global->death = death;
+	global->forks = forks;
+	global->print = print;
+	global->tm_begin = ft_get_time(0);
+}
+
 int	main(int argc, char **argv)
 {
 	t_global	global;
@@ -29,54 +71,11 @@ int	main(int argc, char **argv)
 		death = sem_open("death", O_CREAT, 0644, 0);
 		print = sem_open("print", O_CREAT, 0644, 1);
 		if (case_of_one(&global, philo) == 1)
-		{
-			ft_usleep(global.die_time, &global, philo);
-			sem_close(forks);
-			sem_unlink("forks");
-			sem_close(death);
-			sem_unlink("death");
-			sem_close(print);
-			sem_unlink("print");
-			free(philo);
 			return (0);
-		}
 		init_philo(&global, philo);
-
-		global.death = death;
-		global.forks = forks;
-		global.print = print;
-		global.tm_begin = ft_get_time(0);
+		init_global(&global, forks, death, print);
 		init_process(&global, philo, forks);
-
-		int status;
-		pid_t pid;
-		int terminated_count = 0;
-
-		// while (terminated_count < global.nr_ph) 
-		// {
-    	// 	pid = waitpid(-1, &status, 0); // Wait for any child process to terminate
-    	// 	if (pid > 0)
-        // 		terminated_count++;
-		// }
-		int i = 0;
-		while (i < global.nr_ph)
-		{
-			sem_wait(death);
-			i++;
-		}
-		for (int i = 0; i < global.nr_ph; i++)
-		{
-			printf("%d\n", philo[i].pid);
-    		kill(philo[i].pid, SIGQUIT);
-		}
-		sem_close(forks);
-		sem_unlink("forks");
-		sem_close(death);
-		sem_unlink("death");
-		sem_close(print);
-		sem_unlink("print");
-		free(philo);
+		terminate(&global);
 	}
 	return (0);
 }
-

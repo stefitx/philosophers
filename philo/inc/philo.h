@@ -19,6 +19,14 @@
 # include <pthread.h>
 # include <sys/time.h>
 
+# define RED     "\x1b[31m"
+# define GREEN   "\x1b[32m"
+# define YELLOW  "\x1b[93m"
+# define MAGENTA "\x1b[94m"
+# define CYAN    "\x1b[96m"
+# define WHITE	"\x1b[97m"
+# define RESET   "\x1b[0m"
+
 typedef struct s_global
 {
 	pthread_t		god_t;

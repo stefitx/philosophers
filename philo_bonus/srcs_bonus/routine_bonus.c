@@ -16,6 +16,7 @@ void	check_death(t_global *global, t_philo *philo)
 {
 	long	last_time_eaten;
 	long	current_time;
+	int		i;
 
 	last_time_eaten = philo->last_time_eaten;
 	current_time = ft_get_time(global->tm_begin);
@@ -23,8 +24,12 @@ void	check_death(t_global *global, t_philo *philo)
 	{
 		sem_wait(global->print);
 		printf(RED "[%lu] %d died\n" RESET, current_time, philo->id);
-		for (int i = 0; i < global->nr_ph * 2; i++)
+		i = 0;
+		while (i < global->nr_ph * 2)
+		{
 			sem_post(global->death);
+			i++;
+		}
 		exit(0);
 	}
 }
@@ -49,27 +54,34 @@ int	check_meals(t_global *global, t_philo *philo)
 	return (0);
 }
 
+void	routine_part_one(t_global *global, t_philo *philo, sem_t *forks)
+{
+	check_death(global, philo);
+	sem_wait(forks);
+	print_str(philo, "has taken a fork");
+	check_death(global, philo);
+	sem_wait(forks);
+	check_death(global, philo);
+	print_str(philo, "has taken a fork");
+	check_death(global, philo);
+	print_str(philo, "is eating");
+}
+
 void	philo_routine(t_global *global, t_philo *philo, sem_t *forks)
 {
-	int i = 0;
+	int	i;
+
+	i = 0;
 	while (1)
 	{
-		check_death(global, philo);
-		sem_wait(forks);
-		print_str(philo, "has taken a fork");
-		check_death(global, philo);
-		sem_wait(forks);
-		check_death(global, philo);
-		print_str(philo, "has taken a fork");
-		check_death(global, philo);
-		print_str(philo, "is eating");
+		routine_part_one(global, philo, forks);
 		philo->times_eaten++;
 		philo->last_time_eaten = ft_get_time(philo->global->tm_begin);
 		ft_usleep(philo->global->eat_time, global, philo);
 		sem_post(forks);
 		sem_post(forks);
 		if (check_meals(global, philo) == 1)
-			exit(0) ;
+			exit(0);
 		check_death(global, philo);
 		print_str(philo, "is sleeping");
 		ft_usleep(philo->global->sleep_time, global, philo);

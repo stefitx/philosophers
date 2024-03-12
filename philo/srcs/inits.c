@@ -90,7 +90,7 @@ int	check_meals(t_philo *philo)
 				philo->i_am_full = 1;
 				tm = ft_get_time(philo->global->tm_begin);
 				pthread_mutex_lock(&philo->global->mtx_print);
-				printf("[%lu] %d is full\n", tm, philo->id);
+				printf(YELLOW "[%lu]" GREEN " %d is full\n", tm, philo->id);
 				pthread_mutex_unlock(&philo->global->mtx_print);
 				pthread_mutex_unlock(&philo->mtx_for_fullness);
 				return (1);

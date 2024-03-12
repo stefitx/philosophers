@@ -32,12 +32,14 @@ int	case_of_one(t_global *global, t_philo *philo)
 void	*philo_one(void *arg)
 {
 	t_philo	*philo;
+	long	tm;
 
 	philo = (t_philo *)arg;
 	pthread_mutex_lock(&philo->right_fork);
 	print_str(philo, "has taken right fork");
 	ft_usleep(philo->global->die_time);
-	print_str(philo, "has died");
+	tm = ft_get_time(philo->global->tm_begin);
+	printf(RED "[%lu] %d %s\n", tm, philo->id, "has died");
 	return (NULL);
 }
 
@@ -45,9 +47,9 @@ void	living_well(t_philo	*philo)
 {
 	check_death(philo);
 	pthread_mutex_lock(&philo->right_fork);
-	print_str(philo, "has taken right fork");
+	print_str(philo, "has taken a fork");
 	pthread_mutex_lock(philo->left_fork);
-	print_str(philo, "has taken left fork");
+	print_str(philo, "has taken a fork");
 	print_str(philo, "is eating");
 	pthread_mutex_lock(&philo->mtx_last_tm_eat);
 	philo->times_eaten++;

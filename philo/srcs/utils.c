@@ -33,7 +33,7 @@ void	print_str(t_philo *philo, char *str)
 	if (!dead)
 	{
 		tm = ft_get_time(philo->global->tm_begin);
-		printf("[%lu] %d %s\n", tm, philo->id, str);
+		printf(CYAN "[%lu]" MAGENTA " %d %s\n", tm, philo->id, str);
 	}
 	pthread_mutex_unlock(&philo->global->mtx_print);
 }

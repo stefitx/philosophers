@@ -95,4 +95,3 @@ int	wrong_args(int argc, char **argv, t_global *global)
 	write(2, "[nr_of_times_each_philosopher_must_eat]\n", 41);
 	return (1);
 }
-

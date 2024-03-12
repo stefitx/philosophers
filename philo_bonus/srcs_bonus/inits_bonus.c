@@ -59,10 +59,15 @@ int	case_of_one(t_global *global, t_philo *philo)
 		{
 			sem_wait(global->forks);
 			print_str(&philo[0], "has taken a fork");
-			ft_usleep(global->die_time + 10, global, philo);
+			ft_usleep(global->die_time + 1, global, philo);
 			exit(0);
 		}
-		return 1;
+		if (philo[0].pid != 0)
+		{
+			ft_usleep(global->die_time - 2, global, philo);
+			close_sems(global);
+		}
+		return (1);
 	}
-	return 0;
+	return (0);
 }
