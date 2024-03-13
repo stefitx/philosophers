@@ -54,8 +54,8 @@ void	living_well(t_philo	*philo)
 	pthread_mutex_lock(&philo->mtx_last_tm_eat);
 	philo->times_eaten++;
 	philo->last_time_eaten = ft_get_time(philo->global->tm_begin);
-	pthread_mutex_unlock(&philo->mtx_last_tm_eat);
 	ft_usleep(philo->global->eat_time);
+	pthread_mutex_unlock(&philo->mtx_last_tm_eat);
 	pthread_mutex_unlock(&philo->right_fork);
 	pthread_mutex_unlock(philo->left_fork);
 }
